@@ -1,43 +1,42 @@
 """
     Impedance
 
-Pacote para análise de circuitos em corrente alternada usando impedâncias
-complexas.
+AC circuit analysis with complex impedances.
 
-Trabalha em dois níveis:
+Works on two levels:
 
-- **Numérico** — [`ImpedanceValue`](@ref): uma impedância avaliada numa
-  frequência (`resistive`, `inductive`, `capacitive`).
-- **Simbólico** — [`Element`](@ref): componentes (`Resistor`, `Inductor`,
-  `Capacitor`) combinados em série (`+`) e paralelo (`∥`), avaliados em
-  qualquer frequência com `impedance(rede, f)` ou `rede(f)`.
+- **Numeric** — [`ImpedanceValue`](@ref): an impedance evaluated at a given
+  frequency (`resistive`, `inductive`, `capacitive`).
+- **Symbolic** — [`Element`](@ref): components (`Resistor`, `Inductor`,
+  `Capacitor`) combined in series (`+`) and parallel (`∥`), evaluated at any
+  frequency with `impedance(network, f)` or `network(f)`.
 
-Inclui divisores de tensão/corrente, resposta em frequência, ressonância,
-fator de qualidade, fator de potência e coeficiente de reflexão.
+Includes voltage/current dividers, frequency response, resonance, quality
+factor, power factor and reflection coefficient.
 """
 module Impedance
 
 import Base: +, -, *, /, ==, show, real, imag, abs, angle, conj, inv, isapprox,
              iszero, isinf, isfinite
 
-# Tipo numérico e acessores
+# Numeric type and accessors
 export ImpedanceValue, impedance, resistive, inductive, capacitive
 export resistance, reactance, admittance, voltage, current, phase
 
-# Elementos simbólicos e associações
+# Symbolic elements and combinations
 export Element, Resistor, Inductor, Capacitor, Fixed, Series, Parallel
 export series, parallel, ∥
 
-# Divisores
+# Dividers
 export voltagedivider, currentdivider
 
-# Resposta em frequência
+# Frequency response
 export frequencyresponse, transfer, db, logfreqs, cutofffrequency
 
-# Ressonância e fatores
+# Resonance and factors
 export resonantfrequency, resonantfrequencies, qfactor, bandwidth, powerfactor, pfnature
 
-# Linhas de transmissão
+# Transmission lines
 export reflectioncoefficient, vswr, returnloss
 
 include("values.jl")

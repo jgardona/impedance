@@ -1,12 +1,12 @@
 # ---------------------------------------------------------------------------
-# Ressonância
+# Resonance
 # ---------------------------------------------------------------------------
 
 """
     resonantfrequency(L, C) -> Real
 
-Frequência de ressonância de um circuito LC, em Hz: `f₀ = 1/(2π√(LC))`.
-Aceita valores numéricos ou `Inductor`/`Capacitor` (em qualquer ordem).
+Resonant frequency of an LC circuit, in Hz: `f₀ = 1/(2π√(LC))`.
+Accepts numbers or `Inductor`/`Capacitor` (in any order).
 """
 resonantfrequency(L::Real, C::Real) = inv(2π * sqrt(L * C))
 resonantfrequency(L::Inductor, C::Capacitor) = resonantfrequency(L.L, C.C)
@@ -15,12 +15,12 @@ resonantfrequency(C::Capacitor, L::Inductor) = resonantfrequency(L, C)
 """
     resonantfrequencies(e::Element; fmin=1.0, fmax=1e9, n=2000) -> Vector{Float64}
 
-Busca numérica das frequências, entre `fmin` e `fmax`, em que a reatância da
-rede `e` troca de sinal (`imag(Z) = 0`). A faixa é varrida em `n` pontos
-logarítmicos e cada troca de sinal é refinada por bisseção.
+Numerically search, between `fmin` and `fmax`, for the frequencies where the
+reactance of network `e` changes sign (`imag(Z) = 0`). The range is swept at
+`n` logarithmic points and each sign change is refined by bisection.
 
-Encontra tanto ressonâncias do tipo série (zero de reatância) quanto do tipo
-paralelo (polo de reatância, onde `|Z|` é máximo).
+Finds both series-type resonances (reactance zero) and parallel-type ones
+(reactance pole, where `|Z|` peaks).
 """
 function resonantfrequencies(e::Element; fmin::Real=1.0, fmax::Real=1e9, n::Integer=2000)
     freqs = logfreqs(fmin, fmax, n)
@@ -40,7 +40,7 @@ function resonantfrequencies(e::Element; fmin::Real=1.0, fmax::Real=1e9, n::Inte
     return roots
 end
 
-# Bisseção em escala logarítmica.
+# Bisection on a logarithmic scale.
 function _bisect(x, a, b; iters=100)
     sa = signbit(x(a))
     for _ in 1:iters
@@ -53,18 +53,18 @@ function _bisect(x, a, b; iters=100)
 end
 
 # ---------------------------------------------------------------------------
-# Fator de qualidade e largura de banda
+# Quality factor and bandwidth
 # ---------------------------------------------------------------------------
 
 """
     qfactor(R, L, C; topology=:series) -> Real
 
-Fator de qualidade de um circuito RLC:
+Quality factor of an RLC circuit:
 
 - `topology=:series`   → `Q = (1/R)·√(L/C)`
 - `topology=:parallel` → `Q = R·√(C/L)`
 
-Aceita valores numéricos ou `Resistor`, `Inductor` e `Capacitor`.
+Accepts numbers or `Resistor`, `Inductor` and `Capacitor`.
 """
 function qfactor(R::Real, L::Real, C::Real; topology::Symbol=:series)
     if topology === :series
@@ -82,20 +82,20 @@ qfactor(R::Resistor, L::Inductor, C::Capacitor; topology::Symbol=:series) =
     bandwidth(f0, Q) -> Real
     bandwidth(R, L, C; topology=:series) -> Real
 
-Largura de banda (−3 dB), em Hz: `BW = f₀/Q`.
+Bandwidth (−3 dB), in Hz: `BW = f₀/Q`.
 """
 bandwidth(f0::Real, Q::Real) = f0 / Q
 bandwidth(R, L, C; topology::Symbol=:series) =
     bandwidth(resonantfrequency(L, C), qfactor(R, L, C; topology=topology))
 
 # ---------------------------------------------------------------------------
-# Fator de potência
+# Power factor
 # ---------------------------------------------------------------------------
 
 """
     powerfactor(Z) -> Real
 
-Fator de potência de uma carga de impedância `Z`: `cos φ`, onde `φ = angle(Z)`.
+Power factor of a load with impedance `Z`: `cos φ`, where `φ = angle(Z)`.
 """
 powerfactor(Z::ImpedanceValue) = cos(angle(Z))
 powerfactor(z::Number) = cos(angle(z))
@@ -103,11 +103,11 @@ powerfactor(z::Number) = cos(angle(z))
 """
     pfnature(Z; atol=0) -> Symbol
 
-Natureza do fator de potência da carga `Z`:
+Nature of the power factor of load `Z`:
 
-- `:lagging` — indutiva (corrente atrasada em relação à tensão)
-- `:leading` — capacitiva (corrente adiantada)
-- `:unity`   — puramente resistiva (`|X| ≤ atol`)
+- `:lagging` — inductive (current lags the voltage)
+- `:leading` — capacitive (current leads the voltage)
+- `:unity`   — purely resistive (`|X| ≤ atol`)
 """
 function pfnature(Z::_ZLike; atol::Real=0)
     X = imag(_c(Z))

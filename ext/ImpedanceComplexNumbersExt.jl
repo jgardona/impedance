@@ -1,6 +1,6 @@
 """
-Integração com o pacote ComplexNumbers: converte `ImpedanceValue` de/para
-`ComplexNumber`, permitindo usar `tostring`, `topolar` etc.
+Integration with the ComplexNumbers package: converts `ImpedanceValue` to and
+from `ComplexNumber`, enabling `tostring`, `topolar`, etc.
 
     using Impedance, ComplexNumbers
     tostring(ComplexNumber(Z); form=:polar, degrees=true)

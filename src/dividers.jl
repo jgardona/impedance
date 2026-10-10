@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Divisores de tensão e de corrente
+# Voltage and current dividers
 # ---------------------------------------------------------------------------
 
 const _ZLike = Union{ImpedanceValue,Number}
@@ -8,7 +8,7 @@ const _ZLike = Union{ImpedanceValue,Number}
     voltagedivider(V, Z1, Z2) -> Complex
     voltagedivider(V, e1::Element, e2::Element, f) -> Complex
 
-Tensão sobre `Z2` num divisor com `Z1` e `Z2` em série, alimentado por `V`:
+Voltage across `Z2` in a divider with `Z1` and `Z2` in series, driven by `V`:
 
     V₂ = V · Z2 / (Z1 + Z2)
 """
@@ -19,8 +19,8 @@ voltagedivider(V::Number, e1::Element, e2::Element, f::Real) = voltagedivider(V,
     voltagedivider(V, Zs::AbstractVector) -> Vector{Complex}
     voltagedivider(V, es::AbstractVector{<:Element}, f) -> Vector{Complex}
 
-Tensão sobre cada impedância de `Zs`, todas em série sob a tensão `V`.
-A soma das tensões é igual a `V`.
+Voltage across each impedance in `Zs`, all in series under voltage `V`.
+The voltages add up to `V`.
 """
 function voltagedivider(V::Number, Zs::AbstractVector{<:_ZLike})
     zs = map(_c, Zs)
@@ -33,7 +33,7 @@ voltagedivider(V::Number, es::AbstractVector{<:Element}, f::Real) = voltagedivid
     currentdivider(I, Z1, Z2) -> Complex
     currentdivider(I, e1::Element, e2::Element, f) -> Complex
 
-Corrente em `Z1` num divisor com `Z1` e `Z2` em paralelo, alimentado por `I`:
+Current through `Z1` in a divider with `Z1` and `Z2` in parallel, driven by `I`:
 
     I₁ = I · Z2 / (Z1 + Z2)
 """
@@ -44,8 +44,8 @@ currentdivider(I::Number, e1::Element, e2::Element, f::Real) = currentdivider(I,
     currentdivider(I, Zs::AbstractVector) -> Vector{Complex}
     currentdivider(I, es::AbstractVector{<:Element}, f) -> Vector{Complex}
 
-Corrente em cada ramo de `Zs`, todos em paralelo, alimentados pela corrente `I`.
-A soma das correntes é igual a `I`.
+Current through each branch in `Zs`, all in parallel, driven by current `I`.
+The currents add up to `I`.
 """
 function currentdivider(I::Number, Zs::AbstractVector{<:_ZLike})
     ys = map(z -> inv(_c(z)), Zs)

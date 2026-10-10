@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Associação em série e em paralelo
+# Series and parallel combinations
 # ---------------------------------------------------------------------------
 
 const _ElementLike = Union{Element,ImpedanceValue}
@@ -7,7 +7,7 @@ const _ElementLike = Union{Element,ImpedanceValue}
 _element(e::Element) = e
 _element(Z::ImpedanceValue) = Fixed(Z)
 
-# Achata associações do mesmo tipo: (a + b) + c vira Series([a, b, c]).
+# Flatten combinations of the same kind: (a + b) + c becomes Series([a, b, c]).
 _flatten(::Type{T}, e::T) where {T<:Union{Series,Parallel}} = e.elements
 _flatten(::Type, e::Element) = Element[e]
 
@@ -20,13 +20,13 @@ end
 """
     series(Z1, Z2, ...)
 
-Associação em série: `Z = Z1 + Z2 + ...`.
+Series combination: `Z = Z1 + Z2 + ...`.
 
-- Com `ImpedanceValue` (ou números), retorna o valor resultante.
-- Com `Element`, retorna uma rede `Series`, avaliável em qualquer frequência.
-  Valores misturados com elementos são tratados como impedâncias fixas.
+- With `ImpedanceValue`s (or numbers), returns the resulting value.
+- With `Element`s, returns a `Series` network that can be evaluated at any
+  frequency. Values mixed with elements are treated as fixed impedances.
 
-Equivale ao operador `+`.
+Equivalent to the `+` operator.
 """
 series(xs::_ElementLike...) = _combine(Series, xs)
 series(Zs::ImpedanceValue...) = sum(Zs)
@@ -36,14 +36,15 @@ series() = throw(ArgumentError("informe ao menos uma impedância"))
 """
     parallel(Z1, Z2, ...)
 
-Associação em paralelo: `1/Z = 1/Z1 + 1/Z2 + ...`.
+Parallel combination: `1/Z = 1/Z1 + 1/Z2 + ...`.
 
-- Com `ImpedanceValue` (ou números), retorna o valor resultante. Uma impedância
-  nula (curto-circuito) resulta em zero; impedâncias infinitas (circuito aberto)
-  são ignoradas.
-- Com `Element`, retorna uma rede `Parallel`, avaliável em qualquer frequência.
+- With `ImpedanceValue`s (or numbers), returns the resulting value. A zero
+  impedance (short circuit) yields zero; infinite impedances (open circuit)
+  are ignored.
+- With `Element`s, returns a `Parallel` network that can be evaluated at any
+  frequency.
 
-Equivale ao operador `∥` (digite `\\parallel<tab>`).
+Equivalent to the `∥` operator (type `\\parallel<tab>`).
 """
 parallel(xs::_ElementLike...) = _combine(Parallel, xs)
 parallel(Zs::ImpedanceValue...) = ImpedanceValue(_parallel(map(_c, Zs)))
@@ -53,7 +54,7 @@ parallel() = throw(ArgumentError("informe ao menos uma impedância"))
 function _parallel(zs)
     any(iszero, zs) && return zero(float(first(zs)))
     Y = sum(inv, zs)
-    # Todas as impedâncias infinitas: circuito aberto.
+    # All impedances infinite: open circuit.
     return iszero(Y) ? inv(zero(real(Y))) + zero(Y) : inv(Y)
 end
 
@@ -64,16 +65,16 @@ end
 """
     a ∥ b
 
-Associação em paralelo de impedâncias, elementos ou números (ver
+Parallel combination of impedances, elements or numbers (see
 [`parallel`](@ref)).
 
-!!! warning "Precedência e encadeamento"
-    Para o parser do Julia, `∥` é um operador de comparação:
+!!! warning "Precedence and chaining"
+    Julia's parser treats `∥` as a comparison operator:
 
-    - tem precedência menor que `+`: `R + L ∥ C` é `(R + L) ∥ C`.
-      Use parênteses: `R + (L ∥ C)`.
-    - é encadeado como `<`: `R ∥ L ∥ C` vira `(R ∥ L) && (L ∥ C)` e gera erro.
-      Use `parallel(R, L, C)` ou `(R ∥ L) ∥ C`.
-    - também encadeia com `==`, `≈`, `<`...: escreva `(Z1 ∥ Z2) ≈ Z3`.
+    - it has lower precedence than `+`: `R + L ∥ C` is `(R + L) ∥ C`.
+      Use parentheses: `R + (L ∥ C)`.
+    - it chains like `<`: `R ∥ L ∥ C` becomes `(R ∥ L) && (L ∥ C)` and errors.
+      Use `parallel(R, L, C)` or `(R ∥ L) ∥ C`.
+    - it also chains with `==`, `≈`, `<`...: write `(Z1 ∥ Z2) ≈ Z3`.
 """
 ∥(a, b) = parallel(a, b)

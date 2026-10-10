@@ -1,16 +1,15 @@
 # ---------------------------------------------------------------------------
-# Tipo numérico
+# Numeric type
 # ---------------------------------------------------------------------------
 
 """
     ImpedanceValue(z::Number)
     ImpedanceValue(re, im)
 
-Impedância complexa `Z = R + jX` (em ohms) avaliada numa frequência.
+Complex impedance `Z = R + jX` (in ohms) evaluated at a given frequency.
 
-Use os construtores [`resistive`](@ref), [`inductive`](@ref) e
-[`capacitive`](@ref), ou [`impedance`](@ref), em vez de chamar o tipo
-diretamente.
+Prefer the constructors [`resistive`](@ref), [`inductive`](@ref),
+[`capacitive`](@ref) or [`impedance`](@ref) over calling the type directly.
 """
 struct ImpedanceValue{T<:Real}
     z::Complex{T}
@@ -23,16 +22,16 @@ ImpedanceValue(Z::ImpedanceValue) = Z
 """
     impedance(z::Number) -> ImpedanceValue
 
-Cria uma impedância a partir de um número real ou complexo (em ohms).
+Create an impedance from a real or complex number (in ohms).
 """
 impedance(z::Number) = ImpedanceValue(z)
 impedance(Z::ImpedanceValue) = Z
 
-# Valor complexo de algo que represente uma impedância (ImpedanceValue ou número).
+# Complex value of anything that represents an impedance (ImpedanceValue or number).
 _c(Z::ImpedanceValue) = Z.z
 _c(x::Number) = x
 
-# Resolve a frequência angular a partir de `f` (Hz) ou de `ω` (rad/s).
+# Resolve the angular frequency from `f` (Hz) or `ω` (rad/s).
 function _omega(f, ω)
     if f === nothing && ω === nothing
         throw(ArgumentError("informe a frequência `f` (Hz) ou a palavra-chave `ω` (rad/s)"))
@@ -47,13 +46,13 @@ end
 _nonneg(x, what) = x >= 0 ? x : throw(ArgumentError("$what deve ser ≥ 0, recebido $x"))
 
 # ---------------------------------------------------------------------------
-# Construtores
+# Constructors
 # ---------------------------------------------------------------------------
 
 """
     resistive(R) -> ImpedanceValue
 
-Impedância resistiva `Z = R` (independe da frequência).
+Resistive impedance `Z = R` (frequency independent).
 """
 resistive(R::Real) = ImpedanceValue(float(_nonneg(R, "a resistência")))
 
@@ -61,8 +60,8 @@ resistive(R::Real) = ImpedanceValue(float(_nonneg(R, "a resistência")))
     inductive(L, f)
     inductive(L; ω)
 
-Impedância indutiva `Z = jωL`, com `ω = 2πf`. `L` em henries, `f` em Hz
-(ou `ω` em rad/s).
+Inductive impedance `Z = jωL`, with `ω = 2πf`. `L` in henries, `f` in Hz
+(or `ω` in rad/s).
 """
 inductive(L::Real, f=nothing; ω=nothing) =
     ImpedanceValue(complex(0.0, _omega(f, ω) * _nonneg(L, "a indutância")))
@@ -71,14 +70,14 @@ inductive(L::Real, f=nothing; ω=nothing) =
     capacitive(C, f)
     capacitive(C; ω)
 
-Impedância capacitiva `Z = 1/(jωC) = -j/(ωC)`, com `ω = 2πf`. `C` em farads,
-`f` em Hz (ou `ω` em rad/s). Em `f = 0` a reatância é infinita (circuito aberto).
+Capacitive impedance `Z = 1/(jωC) = -j/(ωC)`, with `ω = 2πf`. `C` in farads,
+`f` in Hz (or `ω` in rad/s). At `f = 0` the reactance is infinite (open circuit).
 """
 capacitive(C::Real, f=nothing; ω=nothing) =
     ImpedanceValue(complex(0.0, -inv(_omega(f, ω) * _nonneg(C, "a capacitância"))))
 
 # ---------------------------------------------------------------------------
-# Acessores
+# Accessors
 # ---------------------------------------------------------------------------
 
 real(Z::ImpedanceValue) = real(Z.z)
@@ -92,8 +91,8 @@ Base.complex(Z::ImpedanceValue) = Z.z
     angle(Z; degrees=false)
     phase(Z; degrees=false)
 
-Ângulo de fase da impedância (ou de um número complexo, como uma função de
-transferência), em radianos ou graus.
+Phase angle of the impedance (or of a complex number, such as a transfer
+function), in radians or degrees.
 """
 angle(Z::ImpedanceValue; degrees::Bool=false) = phase(Z; degrees=degrees)
 phase(Z::ImpedanceValue; degrees::Bool=false) = phase(Z.z; degrees=degrees)
@@ -102,22 +101,22 @@ phase(z::Number; degrees::Bool=false) = degrees ? rad2deg(angle(z)) : angle(z)
 """
     resistance(Z) -> Real
 
-Parte resistiva de `Z` (o mesmo que `real(Z)`).
+Resistive part of `Z` (same as `real(Z)`).
 """
 resistance(Z::ImpedanceValue) = real(Z)
 
 """
     reactance(Z) -> Real
 
-Parte reativa de `Z` (o mesmo que `imag(Z)`): positiva para cargas indutivas e
-negativa para capacitivas.
+Reactive part of `Z` (same as `imag(Z)`): positive for inductive loads and
+negative for capacitive ones.
 """
 reactance(Z::ImpedanceValue) = imag(Z)
 
 """
     admittance(Z) -> Complex
 
-Admitância `Y = 1/Z`, em siemens.
+Admittance `Y = 1/Z`, in siemens.
 """
 admittance(Z::ImpedanceValue) = inv(Z.z)
 inv(Z::ImpedanceValue) = admittance(Z)
@@ -132,7 +131,7 @@ isapprox(a::ImpedanceValue, b::Number; kwargs...) = isapprox(a.z, b; kwargs...)
 isapprox(a::Number, b::ImpedanceValue; kwargs...) = isapprox(a, b.z; kwargs...)
 
 # ---------------------------------------------------------------------------
-# Aritmética
+# Arithmetic
 # ---------------------------------------------------------------------------
 
 +(a::ImpedanceValue, b::ImpedanceValue) = ImpedanceValue(a.z + b.z)
@@ -143,37 +142,37 @@ isapprox(a::Number, b::ImpedanceValue; kwargs...) = isapprox(a, b.z; kwargs...)
 -(x::Number, a::ImpedanceValue) = ImpedanceValue(x - a.z)
 -(a::ImpedanceValue) = ImpedanceValue(-a.z)
 
-# Escalonamento por número mantém a unidade (Ω).
+# Scaling by a number keeps the unit (Ω).
 *(a::ImpedanceValue, x::Number) = ImpedanceValue(a.z * x)
 *(x::Number, a::ImpedanceValue) = a * x
 /(a::ImpedanceValue, x::Number) = ImpedanceValue(a.z / x)
 
-# Produto (Ω²), razão (adimensional) e número/Z (ex.: V/Z = corrente)
-# retornam números complexos.
+# Product (Ω²), ratio (dimensionless) and number/Z (e.g. V/Z = current)
+# return complex numbers.
 *(a::ImpedanceValue, b::ImpedanceValue) = a.z * b.z
 /(a::ImpedanceValue, b::ImpedanceValue) = a.z / b.z
 /(x::Number, a::ImpedanceValue) = x / a.z
 
 # ---------------------------------------------------------------------------
-# Lei de Ohm
+# Ohm's law
 # ---------------------------------------------------------------------------
 
 """
     voltage(Z, I) -> Complex
 
-Tensão `V = Z·I` sobre a impedância `Z` percorrida pela corrente fasorial `I`.
+Voltage `V = Z·I` across impedance `Z` carrying the phasor current `I`.
 """
 voltage(Z::ImpedanceValue, I::Number) = Z.z * I
 
 """
     current(V, Z) -> Complex
 
-Corrente `I = V/Z` na impedância `Z` sob a tensão fasorial `V`.
+Current `I = V/Z` through impedance `Z` under the phasor voltage `V`.
 """
 current(V::Number, Z::ImpedanceValue) = V / Z.z
 
 # ---------------------------------------------------------------------------
-# Exibição
+# Display
 # ---------------------------------------------------------------------------
 
 function show(io::IO, Z::ImpedanceValue)

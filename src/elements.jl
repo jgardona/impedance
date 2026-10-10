@@ -1,23 +1,23 @@
 # ---------------------------------------------------------------------------
-# Elementos simbólicos
+# Symbolic elements
 # ---------------------------------------------------------------------------
 
 """
     Element
 
-Supertipo dos componentes e redes de impedância. Um `Element` guarda os valores
-dos componentes (R, L, C) e pode ser avaliado em qualquer frequência:
+Supertype of impedance components and networks. An `Element` stores the
+component values (R, L, C) and can be evaluated at any frequency:
 
-    impedance(e, f)     # f em Hz
-    impedance(e; ω)     # ω em rad/s
-    e(f)                # atalho
+    impedance(e, f)     # f in Hz
+    impedance(e; ω)     # ω in rad/s
+    e(f)                # shorthand
 """
 abstract type Element end
 
 """
     Resistor(R)
 
-Resistor de `R` ohms.
+Resistor of `R` ohms.
 """
 struct Resistor{T<:Real} <: Element
     R::T
@@ -27,7 +27,7 @@ end
 """
     Inductor(L)
 
-Indutor de `L` henries.
+Inductor of `L` henries.
 """
 struct Inductor{T<:Real} <: Element
     L::T
@@ -37,7 +37,7 @@ end
 """
     Capacitor(C)
 
-Capacitor de `C` farads.
+Capacitor of `C` farads.
 """
 struct Capacitor{T<:Real} <: Element
     C::T
@@ -47,8 +47,8 @@ end
 """
     Fixed(Z)
 
-Impedância constante, independente da frequência. Criada automaticamente ao
-combinar um `ImpedanceValue` com um `Element`.
+Constant, frequency-independent impedance. Created automatically when an
+`ImpedanceValue` is combined with an `Element`.
 """
 struct Fixed{T<:Real} <: Element
     Z::ImpedanceValue{T}
@@ -59,7 +59,7 @@ Fixed(z::Number) = Fixed(ImpedanceValue(z))
 """
     Series(elements)
 
-Associação em série. Normalmente criada com `a + b` ou `series(a, b, ...)`.
+Series combination. Usually created with `a + b` or `series(a, b, ...)`.
 """
 struct Series <: Element
     elements::Vector{Element}
@@ -68,14 +68,14 @@ end
 """
     Parallel(elements)
 
-Associação em paralelo. Normalmente criada com `a ∥ b` ou `parallel(a, b, ...)`.
+Parallel combination. Usually created with `a ∥ b` or `parallel(a, b, ...)`.
 """
 struct Parallel <: Element
     elements::Vector{Element}
 end
 
 # ---------------------------------------------------------------------------
-# Avaliação
+# Evaluation
 # ---------------------------------------------------------------------------
 
 _z(e::Resistor, ω) = resistive(e.R)
@@ -89,20 +89,20 @@ _z(e::Parallel, ω) = parallel((_z(x, ω) for x in e.elements)...)
     impedance(e::Element, f) -> ImpedanceValue
     impedance(e::Element; ω) -> ImpedanceValue
 
-Avalia a impedância do elemento ou rede `e` na frequência `f` (Hz) ou `ω` (rad/s).
+Evaluate the impedance of element or network `e` at frequency `f` (Hz) or `ω` (rad/s).
 """
 impedance(e::Element, f=nothing; ω=nothing) = _z(e, _omega(f, ω))
 
 (e::Element)(f::Real) = impedance(e, f)
 
 # ---------------------------------------------------------------------------
-# Exibição
+# Display
 # ---------------------------------------------------------------------------
 
 const _SI_PREFIXES = ((1e12, "T"), (1e9, "G"), (1e6, "M"), (1e3, "k"), (1.0, ""),
                       (1e-3, "m"), (1e-6, "µ"), (1e-9, "n"), (1e-12, "p"))
 
-# Formata um valor com prefixo SI: 0.01 H → "10 mH".
+# Format a value with an SI prefix: 0.01 H → "10 mH".
 function _si(x::Real, unit::String)
     iszero(x) && return "0 $unit"
     scale, prefix = last(_SI_PREFIXES)
@@ -122,7 +122,7 @@ show(io::IO, e::Inductor) = print(io, "L(", _si(e.L, "H"), ")")
 show(io::IO, e::Capacitor) = print(io, "C(", _si(e.C, "F"), ")")
 show(io::IO, e::Fixed) = print(io, "Z(", e.Z, ")")
 
-# Redes internas são sempre exibidas entre parênteses.
+# Nested networks are always shown in parentheses.
 _showchild(io::IO, e::Element) = show(io, e)
 _showchild(io::IO, e::Union{Series,Parallel}) = (print(io, "("); show(io, e); print(io, ")"))
 
