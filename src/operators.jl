@@ -12,7 +12,7 @@ _flatten(::Type{T}, e::T) where {T<:Union{Series,Parallel}} = e.elements
 _flatten(::Type, e::Element) = Element[e]
 
 function _combine(::Type{T}, xs) where {T<:Union{Series,Parallel}}
-    isempty(xs) && throw(ArgumentError("informe ao menos uma impedância"))
+    isempty(xs) && throw(ArgumentError("provide at least one impedance"))
     length(xs) == 1 && return _element(only(xs))
     return T(reduce(vcat, (_flatten(T, _element(x)) for x in xs)))
 end
@@ -31,7 +31,7 @@ Equivalent to the `+` operator.
 series(xs::_ElementLike...) = _combine(Series, xs)
 series(Zs::ImpedanceValue...) = sum(Zs)
 series(xs::Number...) = sum(xs)
-series() = throw(ArgumentError("informe ao menos uma impedância"))
+series() = throw(ArgumentError("provide at least one impedance"))
 
 """
     parallel(Z1, Z2, ...)
@@ -49,7 +49,7 @@ Equivalent to the `∥` operator (type `\\parallel<tab>`).
 parallel(xs::_ElementLike...) = _combine(Parallel, xs)
 parallel(Zs::ImpedanceValue...) = ImpedanceValue(_parallel(map(_c, Zs)))
 parallel(xs::Number...) = _parallel(xs)
-parallel() = throw(ArgumentError("informe ao menos uma impedância"))
+parallel() = throw(ArgumentError("provide at least one impedance"))
 
 function _parallel(zs)
     any(iszero, zs) && return zero(float(first(zs)))

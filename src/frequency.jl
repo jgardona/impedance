@@ -46,7 +46,7 @@ db(H::Number) = 20 * log10(abs(H))
 useful for Bode plots.
 """
 function logfreqs(f1::Real, f2::Real, n::Integer)
-    (f1 > 0 && f2 > 0) || throw(ArgumentError("as frequências devem ser > 0"))
+    (f1 > 0 && f2 > 0) || throw(ArgumentError("frequencies must be > 0"))
     return collect(exp10.(range(log10(f1), log10(f2); length=n)))
 end
 

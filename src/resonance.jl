@@ -72,7 +72,7 @@ function qfactor(R::Real, L::Real, C::Real; topology::Symbol=:series)
     elseif topology === :parallel
         return R * sqrt(C / L)
     else
-        throw(ArgumentError("topologia inválida: $(repr(topology)); use :series ou :parallel"))
+        throw(ArgumentError("invalid topology: $(repr(topology)); use :series or :parallel"))
     end
 end
 qfactor(R::Resistor, L::Inductor, C::Capacitor; topology::Symbol=:series) =

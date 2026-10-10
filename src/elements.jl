@@ -21,7 +21,7 @@ Resistor of `R` ohms.
 """
 struct Resistor{T<:Real} <: Element
     R::T
-    Resistor(R::T) where {T<:Real} = new{T}(_nonneg(R, "a resistência"))
+    Resistor(R::T) where {T<:Real} = new{T}(_nonneg(R, "resistance"))
 end
 
 """
@@ -31,7 +31,7 @@ Inductor of `L` henries.
 """
 struct Inductor{T<:Real} <: Element
     L::T
-    Inductor(L::T) where {T<:Real} = new{T}(_nonneg(L, "a indutância"))
+    Inductor(L::T) where {T<:Real} = new{T}(_nonneg(L, "inductance"))
 end
 
 """
@@ -41,7 +41,7 @@ Capacitor of `C` farads.
 """
 struct Capacitor{T<:Real} <: Element
     C::T
-    Capacitor(C::T) where {T<:Real} = new{T}(_nonneg(C, "a capacitância"))
+    Capacitor(C::T) where {T<:Real} = new{T}(_nonneg(C, "capacitance"))
 end
 
 """

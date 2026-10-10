@@ -34,16 +34,16 @@ _c(x::Number) = x
 # Resolve the angular frequency from `f` (Hz) or `ω` (rad/s).
 function _omega(f, ω)
     if f === nothing && ω === nothing
-        throw(ArgumentError("informe a frequência `f` (Hz) ou a palavra-chave `ω` (rad/s)"))
+        throw(ArgumentError("provide the frequency `f` (Hz) or the `ω` keyword (rad/s)"))
     elseif f !== nothing && ω !== nothing
-        throw(ArgumentError("informe apenas `f` ou `ω`, não ambos"))
+        throw(ArgumentError("provide either `f` or `ω`, not both"))
     end
     w = ω === nothing ? 2π * f : float(ω)
-    w >= 0 || throw(ArgumentError("a frequência deve ser ≥ 0, recebido $w rad/s"))
+    w >= 0 || throw(ArgumentError("frequency must be ≥ 0, got $w rad/s"))
     return w
 end
 
-_nonneg(x, what) = x >= 0 ? x : throw(ArgumentError("$what deve ser ≥ 0, recebido $x"))
+_nonneg(x, what) = x >= 0 ? x : throw(ArgumentError("$what must be ≥ 0, got $x"))
 
 # ---------------------------------------------------------------------------
 # Constructors
@@ -54,7 +54,7 @@ _nonneg(x, what) = x >= 0 ? x : throw(ArgumentError("$what deve ser ≥ 0, receb
 
 Resistive impedance `Z = R` (frequency independent).
 """
-resistive(R::Real) = ImpedanceValue(float(_nonneg(R, "a resistência")))
+resistive(R::Real) = ImpedanceValue(float(_nonneg(R, "resistance")))
 
 """
     inductive(L, f)
@@ -64,7 +64,7 @@ Inductive impedance `Z = jωL`, with `ω = 2πf`. `L` in henries, `f` in Hz
 (or `ω` in rad/s).
 """
 inductive(L::Real, f=nothing; ω=nothing) =
-    ImpedanceValue(complex(0.0, _omega(f, ω) * _nonneg(L, "a indutância")))
+    ImpedanceValue(complex(0.0, _omega(f, ω) * _nonneg(L, "inductance")))
 
 """
     capacitive(C, f)
@@ -74,7 +74,7 @@ Capacitive impedance `Z = 1/(jωC) = -j/(ωC)`, with `ω = 2πf`. `C` in farads,
 `f` in Hz (or `ω` in rad/s). At `f = 0` the reactance is infinite (open circuit).
 """
 capacitive(C::Real, f=nothing; ω=nothing) =
-    ImpedanceValue(complex(0.0, -inv(_omega(f, ω) * _nonneg(C, "a capacitância"))))
+    ImpedanceValue(complex(0.0, -inv(_omega(f, ω) * _nonneg(C, "capacitance"))))
 
 # ---------------------------------------------------------------------------
 # Accessors
