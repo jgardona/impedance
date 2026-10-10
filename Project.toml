@@ -1,0 +1,19 @@
+name = "Impedance"
+uuid = "d90c7a4f-4336-4037-9d82-5d2137f2324b"
+version = "0.1.0"
+authors = ["jgardona <jcbritobr@gmail.com>"]
+
+[weakdeps]
+ComplexNumbers = "54edfcf5-52eb-48f9-b9b4-281965d10d8f"
+
+[extensions]
+ImpedanceComplexNumbersExt = "ComplexNumbers"
+
+[compat]
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

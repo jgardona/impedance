@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1280" height="640" viewBox="0 0 1280 640">
+  <defs>
+    <radialGradient id="bg" cx="75%" cy="50%" r="80%">
+      <stop offset="0" stop-color="#1f2333"/>
+      <stop offset="1" stop-color="#11131c"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse" x="960" y="320">
+      <path d="M40 0H0V40" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="640" fill="url(#grid)"/>
+
+  <!-- Circuito: os três pontos do Julia são os nós; R, L e C são os ramos.
+       Cada componente é desenhado ao longo do eixo x local (nós em ±173.2)
+       e posicionado no ramo com translate + rotate. -->
+  <g fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Indutor: ramo vermelho → verde -->
+    <g transform="translate(873.4 270) rotate(-60)" stroke="#e6e8ef">
+      <path d="M-124 0H-60a15 15 0 0 1 30 0a15 15 0 0 1 30 0a15 15 0 0 1 30 0a15 15 0 0 1 30 0H124"/>
+    </g>
+    <!-- Capacitor: ramo verde → roxo -->
+    <g transform="translate(1046.6 270) rotate(60)" stroke="#e6e8ef">
+      <path d="M-124 0H-11M11 0H124"/>
+      <path d="M-11 -28V28M11 -28V28" stroke-width="6"/>
+    </g>
+    <!-- Resistor: ramo vermelho → roxo -->
+    <g transform="translate(960 420)" stroke="#e6e8ef">
+      <path d="M-124 0H-60L-50 -18L-30 18L-10 -18L10 18L30 -18L50 18L60 0H124"/>
+    </g>
+  </g>
+
+  <!-- Os três pontos do Julia como nós do circuito -->
+  <circle cx="960" cy="120" r="46" fill="#60AD51" stroke="#389826" stroke-width="6"/>
+  <circle cx="786.8" cy="420" r="46" fill="#D5635C" stroke="#CB3C33" stroke-width="6"/>
+  <circle cx="1133.2" cy="420" r="46" fill="#AA79C1" stroke="#9558B2" stroke-width="6"/>
+
+  <!-- Impedância de cada ramo -->
+  <g font-family="FiraCode Nerd Font, monospace" font-size="22" fill="#e6e8ef">
+    <text x="842" y="226" text-anchor="end">Z<tspan font-size="15" dy="6">L</tspan><tspan dy="-6"> = jωL</tspan></text>
+    <text x="1078" y="226">Z<tspan font-size="15" dy="6">C</tspan><tspan dy="-6"> = 1/jωC</tspan></text>
+    <text x="960" y="488" text-anchor="middle">Z<tspan font-size="15" dy="6">R</tspan><tspan dy="-6"> = R</tspan></text>
+  </g>
+  <text x="960" y="335" text-anchor="middle" font-family="FiraCode Nerd Font, monospace" font-size="24" fill="#8b92a8">Z(ω)</text>
+  <text x="960" y="590" text-anchor="middle" font-family="FiraCode Nerd Font, monospace" font-size="26" font-weight="600" fill="#e6e8ef">Z = R + jX</text>
+
+  <!-- Título e texto -->
+  <g font-family="Inter, sans-serif">
+    <text x="72" y="150" font-size="60" font-weight="800" fill="#ffffff">Impedance<tspan fill="#9558B2">.jl</tspan></text>
+    <text x="74" y="200" font-size="25" font-weight="400" fill="#b8bdcc">Impedâncias complexas em Julia: série, paralelo,</text>
+    <text x="74" y="234" font-size="25" font-weight="400" fill="#b8bdcc">resposta em frequência e ressonância.</text>
+  </g>
+
+  <!-- Trecho de código -->
+  <rect x="72" y="282" width="560" height="270" rx="14" fill="#0c0e15" stroke="#2c3142" stroke-width="1.5"/>
+  <circle cx="98" cy="306" r="6" fill="#CB3C33"/>
+  <circle cx="118" cy="306" r="6" fill="#389826"/>
+  <circle cx="138" cy="306" r="6" fill="#9558B2"/>
+  <g font-family="FiraCode Nerd Font, monospace" font-size="20">
+    <text x="96" y="356"><tspan fill="#389826" font-weight="600">julia&gt;</tspan><tspan fill="#e6e8ef"> rede = R + (L ∥ C)</tspan></text>
+    <text x="96" y="384" fill="#8b92a8">R(100 Ω) + (L(10 mH) ∥ C(1 µF))</text>
+    <text x="96" y="424"><tspan fill="#389826" font-weight="600">julia&gt;</tspan><tspan fill="#e6e8ef"> rede(1e3)</tspan></text>
+    <text x="96" y="452" fill="#8b92a8">100.0 + 103.817j Ω</text>
+    <text x="96" y="492"><tspan fill="#389826" font-weight="600">julia&gt;</tspan><tspan fill="#e6e8ef"> resonantfrequency(L, C)</tspan></text>
+    <text x="96" y="520" fill="#8b92a8">1591.5494309189535</text>
+  </g>
+</svg>

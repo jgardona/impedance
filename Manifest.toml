@@ -1,0 +1,16 @@
+# This file is machine-generated - editing it directly is not advised
+
+julia_version = "1.13.1"
+manifest_format = "2.1"
+project_hash = "970a1d84d26e8f5db2e4a916db882495619a523e"
+
+[[deps.Impedance]]
+path = "."
+uuid = "d90c7a4f-4336-4037-9d82-5d2137f2324b"
+version = "0.1.0"
+
+    [deps.Impedance.extensions]
+    ImpedanceComplexNumbersExt = "ComplexNumbers"
+
+    [deps.Impedance.weakdeps]
+    ComplexNumbers = "54edfcf5-52eb-48f9-b9b4-281965d10d8f"
