@@ -1,0 +1,6 @@
+[deps]
+Impedance = "d90c7a4f-4336-4037-9d82-5d2137f2324b"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+
+[sources]
+Impedance = {path = ".."}

@@ -1,31 +1,3 @@
-<!--
-Sync Impact Report
-==================
-Version change: (unversioned template) → 1.0.0
-Bump rationale: initial ratification; every placeholder replaced with concrete governance.
-
-Modified principles (template slot → new title):
-  - [PRINCIPLE_1_NAME] → I. SOLID Design
-  - [PRINCIPLE_2_NAME] → II. Purposeful Design Patterns
-  - [PRINCIPLE_3_NAME] → III. English as the Project Language
-  - [PRINCIPLE_4_NAME] → IV. Human-Readable Documentation
-  - [PRINCIPLE_5_NAME] → removed (user defined four principles)
-
-Added sections:
-  - Technical Constraints (was [SECTION_2_NAME])
-  - Development Workflow & Quality Gates (was [SECTION_3_NAME])
-  - Governance
-
-Removed sections:
-  - Fifth principle slot (not requested)
-
-Templates: not modified by this command (they read the constitution at runtime).
-
-Follow-up TODOs:
-  - README.md is still written in Portuguese; it violates Principle III and must be
-    migrated to English in a follow-up change.
--->
-
 # Impedance.jl Constitution
 
 ## Core Principles
