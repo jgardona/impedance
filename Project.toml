@@ -1,6 +1,6 @@
 name = "Impedance"
 uuid = "d90c7a4f-4336-4037-9d82-5d2137f2324b"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["jgardona <jcbritobr@gmail.com>"]
 
 [weakdeps]
